@@ -1,0 +1,69 @@
+@import '~antd/dist/antd.css';
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+#app-layout .trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 16px;
+  cursor: pointer;
+  transition: color .3s;
+}
+
+#app-layout .trigger:hover {
+  color: #108ee9;
+}
+
+#app-layout .logo {
+  height: 32px;
+  background: #333;
+  border-radius: 6px;
+  margin: 16px;
+}
+
+#post_detail_box {
+  height: 80vh;
+  width: 100%;
+}
+
+#post_detail_box .post_content_box {
+  min-height: 15vh;
+  background-color: #fff;
+  border-bottom: 10px solid #ececec;
+  position: relative;
+}
+
+#post_detail_box .post_comments_box {
+  height: 33.6vh;
+}
+#post_detail_box .ant-spin-nested-loading {
+  width: 100%;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.main_action_btn {
+  font-size: 40px;
+  color: #555;
+  transition: .5s ease;
+}
+.main_action_btn:hover{
+  color: #398ee2
+}
