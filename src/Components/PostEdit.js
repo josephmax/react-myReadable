@@ -40,14 +40,15 @@ class PostEdit extends Component {
             }
         }))
     }
-    resetData = () => {
+    resetData = (props) => {
         const { post } = this.state
+        const category = props ? props.category : this.props.category
         this.setState({
             post: Object.keys(post).reduce((data, key) => ({
                 ...data,
                 [key]: ''
             }), {}),
-            category: ''
+            category
         })
     }
     valid = () => {
@@ -123,7 +124,7 @@ class PostEdit extends Component {
         if (nextProps.data && nextProps.data.id) {
             this.mapPropsToData(nextProps.data)
         } else {
-            this.resetData()
+            this.resetData(nextProps)
         }
     }
     render() {

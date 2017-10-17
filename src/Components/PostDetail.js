@@ -67,7 +67,6 @@ class PostDetail extends Component {
         if (type === 'add') {
             fetchCommentsListByPostId(data.id)
         } else {
-            console.warn(res)
             updateCommentById(res)
         }
         this.setState({
@@ -97,11 +96,14 @@ class PostDetail extends Component {
             <Layout id="post_detail_box">
                 <div className="post_content_box">
                     <h3>Author: {author}
-                        <Icon type="edit"
-                            style={{position: 'absolute', top: 0, right: 10, fontSize: 24, cursor: 'pointer'}}
-                            onClick={onCardOpen} />
+                        <span className="post_txt" onClick={onCardOpen} >
+                            EDIT POST!!!
+                            <Icon type="edit"
+                            style={{float: 'right', fontSize: 24, color: '#108ee9'}}/>
+                        </span>
                     </h3>
                     <p>{body}</p>
+                    <p style={{marginTop: 10, color: '#108ee9'}}>{`${list.length} comment${list.length > 1 ? 's' : ''}`}</p>
                 </div>
                 <Content style={{overflow: 'scroll',
                     display: 'flex',

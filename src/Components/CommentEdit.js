@@ -74,7 +74,6 @@ export default class CommentEdit extends Component {
         }
         _submitFn(postData, _id).then(res => {
             if (!res.error) {
-                console.warn(postData)
                 message.success(_successText)
                 this.resetData()
                 onSubmitSuccess && onSubmitSuccess(res, _type)

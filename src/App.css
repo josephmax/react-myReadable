@@ -53,6 +53,14 @@
 #post_detail_box .ant-spin-nested-loading {
   width: 100%;
 }
+#post_detail_box .post_txt {
+  float: right;
+  color: #108ee9;
+  cursor: pointer
+}
+.ant-affix {
+  z-index: 1
+}
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

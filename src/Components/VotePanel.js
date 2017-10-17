@@ -15,18 +15,20 @@ export default class VotePanel extends Component {
     }
     // todo: voted status should be managed from backend, this is only for frontend display demo
     state = {
-        voted: false
+        like: false,
+        dislike: false
     }
-    handleVote = (e) => {
+    handleVote = (e, type) => {
         e.stopPropagation()
-        const { voted } = this.state
+        const { like, dislike } = this.state
         const { onVoteUp, onVoteDown } = this.props
-        if (voted === false) {
-            this.setState({voted: true})
-            onVoteUp()
+        const voted = type === 'like' ? like : dislike
+        if (type === 'like') {
+            this.setState({like: !voted})
+            voted === false ? onVoteUp() : onVoteDown()
         } else {
-            this.setState({voted: false})
-            onVoteDown()
+            this.setState({dislike: !voted})
+            voted === false ? onVoteDown() : onVoteUp()
         }
     }
     handleDel = (e) => {
@@ -35,12 +37,14 @@ export default class VotePanel extends Component {
         onDel()
     }
     render() {
-        const { voted } = this.state
+        const { like, dislike } = this.state
         const { voteCount, onCountClick } = this.props
         return (
             <Button.Group>
-                <Button icon={voted ? 'like' : 'like-o'} size="large"
-                    onClick={this.handleVote}/>
+                <Button icon={like ? 'like' : 'like-o'} size="large"
+                    onClick={e => this.handleVote(e, 'like')}/>
+                <Button icon={dislike ? 'dislike' : 'dislike-o'} size="large"
+                    onClick={e => this.handleVote(e, 'dislike')}/>
                 <Button size="large" style={{padding: '0 15px'}}
                     onClick={e => {
                         e.stopPropagation()
