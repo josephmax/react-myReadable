@@ -69,6 +69,7 @@ class Post extends Component {
     render() {
         const { data, onCardOpen } = this.props
         const { comments } = this.state
+        let countableComments = comments.filter(item => !item.deleted && !item.parentDeleted)
         return (
             <Card title={data.title} 
                 onClick={e => onCardOpen(data)}
@@ -87,9 +88,9 @@ class Post extends Component {
                 </span>
                 }
                 style={{ width: 'calc(100% - 70px)', marginBottom: 15, position: 'relative', cursor: 'pointer' }}>
-                <p>{data.author}</p>
-                <p>{data.body}</p>
-                <p style={{marginTop: 10, color: '#108ee9'}}>{`${comments.length} comment${comments.length > 1 ? 's' : ''}`}</p>
+                <p><span className="blue_txt">author</span>: {data.author}</p>
+                <p><span className="blue_txt">content</span>: {data.body}</p>
+                <p style={{marginTop: 10, color: '#108ee9'}}>{`${countableComments.length} comment${countableComments.length > 1 ? 's' : ''}`}</p>
             </Card>
         )
     }

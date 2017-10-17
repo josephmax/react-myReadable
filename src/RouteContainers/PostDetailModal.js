@@ -40,7 +40,7 @@ class PostDetailModal extends Component {
             <Modal
                 zIndex={1}
                 visible={true}
-                title={'temp title'}
+                title={targetPost.title}
                 maskClosable={true}
                 footer={null}
                 style={{ width: 800, top: '5vh'}}

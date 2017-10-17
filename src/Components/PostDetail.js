@@ -2,11 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { withRouter } from 'react-router'
 
 import { Layout, Spin, message, Modal, Icon } from 'antd'
+import { updatePostById } from '@/Actions/posts'
 import { fetchCommentsListByPostId, updateCommentById, updateTargetComment } from '@/Actions/comments'
-import { CommentCard, CommentEdit } from '@/Components'
-import { voteComment, delComment } from '@/Services/API'
+import { CommentCard, CommentEdit, VotePanel } from '@/Components'
+import { voteComment, delComment, votePost, delPost } from '@/Services/API'
 
 const { Footer, Content } = Layout
 
@@ -35,8 +37,19 @@ class PostDetail extends Component {
             fetchCommentsListByPostId(data.id)
         }
     }
-    
-    voteHandler = (id, type = 'upVote') => {
+    votePostHandler = (type = 'upVote') => {
+        const { updatePostById, data } = this.props
+        const { id } = data
+        votePost(id, type).then(res => {
+            if (!res.error) {
+                updatePostById(res)
+                message.success('thanks for your voting!')
+            } else {
+                message.error(res.error)
+            }
+        }).catch( err => message.error('Oops, network error please try again later.'))
+    }
+    voteCommentHandler = (id, type = 'upVote') => {
         const { updateCommentById } = this.props
         voteComment(id, type).then(res => {
             if (!res.error) {
@@ -76,6 +89,18 @@ class PostDetail extends Component {
             updateTargetComment()
         }, 300)
     }
+    delHandler = () => {
+        const { updatePostById, data, history } = this.props
+        delPost(data).then(res => {
+            if (!res.error) {
+                updatePostById(res)
+                message.success('delete succeed')
+                history.go(-1)
+            } else {
+                message.error(res.error)
+            }
+        }).catch( err => message.error('Oops, network error please try again later.'))
+    }
     commentDelHandler = (comment) => {
         const { updateCommentById } = this.props
         delComment(comment).then(res => {
@@ -88,22 +113,30 @@ class PostDetail extends Component {
         }).catch(_ => message.error('Oops, network error please try again later.'))
     }
     render() {
-        const { author, body } = this.props.data
+        const { author, body, voteScore } = this.props.data
         const { targetPost, onCardOpen } = this.props
         const { list, commentsLoading, targetComment } = this.props.comments
         const { showCommentEditmodal } = this.state
+        let countableComments = list.filter(item => !item.deleted && !item.parentDeleted)        
         return (
             <Layout id="post_detail_box">
                 <div className="post_content_box">
-                    <h3>Author: {author}
+                    <p>
                         <span className="post_txt" onClick={onCardOpen} >
                             EDIT POST!!!
-                            <Icon type="edit"
+                        <Icon type="edit"
                             style={{float: 'right', fontSize: 24, color: '#108ee9'}}/>
                         </span>
-                    </h3>
-                    <p>{body}</p>
-                    <p style={{marginTop: 10, color: '#108ee9'}}>{`${list.length} comment${list.length > 1 ? 's' : ''}`}</p>
+                        <VotePanel 
+                            onVoteUp={e => this.votePostHandler('upVote')}
+                            onVoteDown={e => this.votePostHandler('downVote')}
+                            onCountClick={e => message.info(`I am voted by ${voteScore} people!`)}
+                            onDel={this.delHandler}
+                            voteCount={voteScore} />
+                    </p>
+                    <p><span className="blue_txt">author</span>: {author}</p>
+                    <p><span className="blue_txt">content</span>: {body}</p>
+                    <p style={{marginTop: 10, color: '#108ee9'}}>{`${countableComments.length} comment${countableComments.length > 1 ? 's' : ''}`}</p>
                 </div>
                 <Content style={{overflow: 'scroll',
                     display: 'flex',
@@ -115,8 +148,8 @@ class PostDetail extends Component {
                                 <CommentCard key={item.id}
                                     data={item}
                                     onClick={e => this.commentEditmodalOpenHandler(item)}
-                                    onVoteUp={e => this.voteHandler(item.id, 'upVote')}
-                                    onVoteDown={e => this.voteHandler(item.id, 'downVote')}
+                                    onVoteUp={e => this.voteCommentHandler(item.id, 'upVote')}
+                                    onVoteDown={e => this.voteCommentHandler(item.id, 'downVote')}
                                     onDel={e => this.commentDelHandler(item)}/>
                             ))
                             : <p style={{textAlign: 'center', marginTop: '30%'}}>No Comments Yet!</p>
@@ -144,11 +177,12 @@ class PostDetail extends Component {
     }
 }
 
-export default connect(state => ({
+export default withRouter(connect(state => ({
     comments: state.comments,
     targetPost: state.posts.targetPost
 }), dispatch => bindActionCreators({
     fetchCommentsListByPostId,
+    updatePostById,
     updateCommentById,
     updateTargetComment
-}, dispatch))(PostDetail)
+}, dispatch))(PostDetail))
